@@ -6,7 +6,9 @@ function App() {
   const [episode, setEpisode] = useState(null)
 
   return(
-    <HeatMap setEpisode={setEpisode}/>
+    <main className='w-screen'>
+      <HeatMap setEpisode={setEpisode}/>
+    </main>
   )
   
 }

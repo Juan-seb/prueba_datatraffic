@@ -1,6 +1,7 @@
-import { useState, useEffect, memo } from 'react'
+import React, { useState, useEffect, memo, Suspense } from 'react'
 import { createArrayOfSeasonsAndEpisodes, createArrayToGrid } from '@/helpers/array_helper_api'
-import Cell from '@/components/Cell'
+
+const LazyCell = React.lazy(() => import('@/components/Cell'))
 
 const Map = ({ setEpisode }) => {
 
@@ -59,64 +60,68 @@ const Map = ({ setEpisode }) => {
   const generateRows = () => `grid-rows-${seasonsInApi.length.toString()}`
 
   return (
-    <main className='w-screen h-max'>
-      <section className='flex flex-wrap w-full py-2 px-5'>
-        <div className='w-[10%]'>
+    <div className="w-[90%] overflow-x-scroll bk:overflow-x-hidden m-auto">
+      <section className='w-[1150px] m-auto'>
+        <div className='flex flex-wrap w-full py-2 px-5'>
+          <div className='w-[8%] sticky left-2 bg-white rounded-md'>
+            
+          </div>
+          <div className='flex flex-grow gap-4 w-[90%] mb-2'>
+            {
+              episodesInApi.map((episode, index) => (
+                <div key={index} className='flex-grow py-1 px-2 bg-red-300 rounded-md'>
+                  <h2 className='text-center'>
+                    {episode}
+                  </h2>
+                </div>
+              ))
+            }
+          </div>
+          <div className='flex flex-col sticky left-2 w-[8%] gap-4'>
+            {
+              seasonsInApi.map((season, index) => (
+                <div key={index} className='flex-grow mr-3 bg-red-300 rounded-md'>
+                  <h2 className='text-center m-auto'>
+                    {season}
+                  </h2>
+                </div>
+              ))
+            }
+          </div>
+          <section style={
+            {
+              gridTemplateColumns: `repeat(${episodesInApi.length.toString()}, minmax(0, 1fr))`,
+              gridTemplateRows: `repeat(${seasonsInApi.length.toString()}, minmax(0, 1fr))`
+            }
+          } className='grid gap-4 flex-grow'>
 
-        </div>
-        <div className='flex flex-grow w-[90%]'>
-          {
-            episodesInApi.map((episode, index) => (
-              <div key={index} className='flex-grow'>
-                <h2 className='text-center'>
-                  {episode}
-                </h2>
-              </div>
-            ))
-          }
-        </div>
-        <div className='flex flex-col w-[10%] h-min'>
-          {
-            seasonsInApi.map((season, index) => (
-              <div key={index} className='flex-grow h-[70px]'>
-                <h2 className='text-center m-auto'>
-                  {season}
-                </h2>
-              </div>
-            ))
-          }
-        </div>
-        <section style={
-          {
-            gridTemplateColumns: `repeat(${episodesInApi.length.toString()}, minmax(0, 1fr))`,
-            gridTemplateRows: `repeat(${seasonsInApi.length.toString()}, minmax(0, 1fr))`
-          }
-        } className='grid gap-4 flex-grow'>
+            {
+              idsGrid.map((id, index) => {
+                let episodeToColor = dataEpisodes[flag]
 
-          {
-            idsGrid.map((id, index) => {
-              let episodeToColor = dataEpisodes[flag]
+                if (episodeToColor?.episode === id) {
+                  flag = flag + 1
+                  return (
+                    <Suspense key={id} fallback={<div>Loading...</div>}>
+                      <LazyCell key={id} data={episodeToColor}/>
+                    </Suspense>
+                  )
 
-              if (episodeToColor?.episode === id) {
-                flag = flag + 1
+                }
+
                 return (
-                  <Cell key={id} data={episodeToColor} />
+                  <div key={id} className='w-full h-full'>
+
+                  </div>
                 )
 
-              }
 
-              return (
-                <div key={id} className='w-full h-full'>
-
-                </div>
-              )
-
-
-            })
-          }
-        </section>
+              })
+            }
+          </section>
+        </div>
       </section>
-    </main>
+    </div>
   )
 
 }
