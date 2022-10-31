@@ -56,9 +56,6 @@ const HeatMap = ({ setEpisode, mode }) => {
     )
   }
 
-  const generateCols = () => `grid-cols-${episodesInApi.length.toString()}`
-  const generateRows = () => `grid-rows-${seasonsInApi.length.toString()}`
-
   return (
     <div className="w-[90%] overflow-x-scroll bk:overflow-x-hidden m-auto">
       <section className='w-[1150px] m-auto'>
