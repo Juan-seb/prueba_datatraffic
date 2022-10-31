@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { getEntitiesAll, getEntityById, upsertEntity, deleteEntity } from '../services/crud.js'
+import { getRecordsInEntity, getEntityById, upsertRecordInEntity, deleteRecordInEntity } from '../services/crud.js'
 
 const routerCrud = Router()
 
@@ -14,8 +14,8 @@ const routerCrud = Router()
 }) */
 
 router.get('/:entity', async (req, res) => {
-  const { page } = req.query
 
+  const { page } = req.query
   const { entity } = req.params
 
   let options = {
@@ -24,16 +24,12 @@ router.get('/:entity', async (req, res) => {
   }
 
   try {
-    const data = await getEntitiesAll(options)
+    const data = await getRecordsInEntity(options)
 
-    res
-      .status(200)
-      .json(data)
+    res.status(200).json(data)
 
   } catch (error) {
-
     res.status(500).json({ error })
-
   }
 
 })
@@ -60,13 +56,12 @@ router.post('/:entity', async (req, res) => {
   const data = req.body
 
   try {
-    await upsertEntity(entity, { data })
+    await upsertRecordInEntity(entity, { data })
 
-    res.status(200)
-      .json({
-        error: false,
-        msg: 'Registro creado'
-      })
+    res.status(200).json({
+      error: false,
+      msg: 'Registro creado'
+    })
 
   } catch (error) {
 
@@ -83,12 +78,13 @@ router.patch('/:entity', async (req, res) => {
   const data = req.body
 
   try {
-    await service.upsertEntity(entity, { data })
+    await service.upsertRecordInEntity(entity, { data })
 
     res.status(200).json({
       error: false,
       msg: 'Registro creado'
     })
+
   } catch (error) {
 
     res.status(500).json({ error })
@@ -104,7 +100,7 @@ router.delete('/:entity', async (req, res) => {
 
   try {
 
-    await deleteEntity(entity, id);
+    await deleteRecordInEntity(entity, id);
     res.status(200).json({
       error: false,
       msg: 'Registro eliminado'
@@ -116,4 +112,4 @@ router.delete('/:entity', async (req, res) => {
 
 })
 
-export {routerCrud}
+export { routerCrud }
