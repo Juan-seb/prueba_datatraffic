@@ -10,7 +10,8 @@ const SquareCell = ({ url }) => {
 
     if (!data) return
     
-    setColor(data.color)
+    const character = JSON.parse(localStorage.getItem(`character-${data.id}`))
+    setColor(character.color)
 
   }, [data])
 

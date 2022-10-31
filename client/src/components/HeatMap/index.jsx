@@ -3,7 +3,7 @@ import { createArrayOfSeasonsAndEpisodes, createArrayToGrid } from '@/helpers/ar
 
 const LazyCell = React.lazy(() => import('@/components/Cell'))
 
-const Map = ({ setEpisode }) => {
+const HeatMap = ({ setEpisode, mode }) => {
 
   const [url, setUrl] = useState(import.meta.env.VITE_URL_EPISODES)
   const [seasonsInApi, setSeasonInApi] = useState([])
@@ -50,9 +50,9 @@ const Map = ({ setEpisode }) => {
 
   if (url) {
     return (
-      <main>
+      <section className="w-[90%] m-auto"> 
         Cargando el mapa de calor
-      </main>
+      </section>
     )
   }
 
@@ -63,8 +63,8 @@ const Map = ({ setEpisode }) => {
     <div className="w-[90%] overflow-x-scroll bk:overflow-x-hidden m-auto">
       <section className='w-[1150px] m-auto'>
         <div className='flex flex-wrap w-full py-2 px-5'>
-          <div className='w-[8%] sticky left-2 bg-white rounded-md'>
-            
+          <div className='w-[8%]'>
+
           </div>
           <div className='flex flex-grow gap-4 w-[90%] mb-2'>
             {
@@ -103,7 +103,7 @@ const Map = ({ setEpisode }) => {
                   flag = flag + 1
                   return (
                     <Suspense key={id} fallback={<div>Loading...</div>}>
-                      <LazyCell key={id} data={episodeToColor}/>
+                      <LazyCell key={id} data={episodeToColor} mode={mode} idCell={episodeToColor.episode}/>
                     </Suspense>
                   )
 
@@ -126,4 +126,4 @@ const Map = ({ setEpisode }) => {
 
 }
 
-export const HeatMap = memo(Map)
+export default HeatMap 
