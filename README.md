@@ -22,9 +22,6 @@ Se utilizó una arquitecura Cliente / Servidor básica.
     - `cd ./server`
     - `npm install`
 
-## COMPILACIÓN FRONTEND
-- Para compilar React (cuando haya sido modificado) se debe ejecutar npm run build en ./client
-
 ## EJECUCION
 - ### FRONTEND
     - `cd ./client`
