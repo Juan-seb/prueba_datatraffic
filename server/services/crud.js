@@ -1,8 +1,5 @@
-import { open } from 'sqlite3'
 import * as dotenv from 'dotenv'
-import fetch from 'node-fetch'
 import path from 'path'
-import sqlite from 'sqlite'
 import knex from 'knex'
 
 dotenv.config();
@@ -18,24 +15,48 @@ const knexConnection = knex({
   },
 })
 
+const getNextPage = (quantity, page) => {
+
+  const pages = Math.trunc(quantity/20) + 1
+
+  if(parseInt(page) < pages) {
+    return parseInt(page) + 1
+  }
+
+  return null
+
+}
+
+const getPrevPage = (page) => {
+
+  if(parseInt(page) === 1){
+    return null
+  }
+
+  return parseInt(page) - 1
+
+}
+
 const getRecordsInEntity = async ({ db_entity, page }) => {
 
   let perPage = 20
+  let pageToRequest = page || '1'
+
 
   const sqlToGetTotalRecords = `SELECT COUNT(*) as total FROM ${db_entity};`
-  const sqlToGetRecords = `SELECT * FROM ${db_entity} LIMIT ${perPage} OFFSET ${(page - 1) * perPage};`
+  const sqlToGetRecords = `SELECT * FROM ${db_entity} LIMIT ${perPage} OFFSET ${(pageToRequest - 1) * perPage};`
 
-  if (db_entity === '' || page === '') {
+  if (db_entity === '') {
     throw new Error('Not entity in the request')
   }
 
 
   try {
-    let count = resSqlTotal[0].total || 0;
-
+ 
     const resSqlTotal = await knexConnection.raw(sqlToGetTotalRecords)
     const resSqlRecords = await knexConnection.raw(sqlToGetRecords)
 
+    let count = resSqlTotal[0].total || 0;
 
     const jsonRecords = resSqlRecords.map(record => {
 
@@ -45,40 +66,36 @@ const getRecordsInEntity = async ({ db_entity, page }) => {
         regOut[field] = record[field];
 
         try {
-          regOut[field] = JSON.parse(reg[field])
-        } catch (error) {
-          throw new Error(`Error in parsing json at field: ${field}`)
-        }
+          regOut[field] = JSON.parse(record[field])
+        } catch (error) {}
 
       });
 
       return regOut;
     });
 
-    let results = {
+    const results = {
       info: {
         count,
-        pages: Math.ceil(count / perPage)
+        pages: Math.ceil(count / perPage),
+        next: getNextPage(count, pageToRequest) ? `${apiBaseURL}/${db_entity}/?page=${getNextPage(count, pageToRequest)}` : null,
+        prev: getPrevPage(pageToRequest) ? `${apiBaseURL}/${db_entity}/?page=${getPrevPage(pageToRequest)}` : null
       },
       results: jsonRecords
     }
 
-    knexConnection.destroy();
     return results;
 
   } catch (error) {
-    throw new Error('Error in the sql query')
+    /* throw new Error('Error in the sql query') */
+    console.log(error)
   }
 
 }
 
-const getEntityById = async (db_entity, id, options) => {
+const getEntityById = async (db_entity, id) => {
 
-}
-
-const deleteRecordInEntity = async (db_entity, id) => {
-
-  const sqlToDeleteRecord = `DELETE FROM ${db_entity} WHERE id=${id};`
+  const sqlToQuery = `SELECT * FROM ${db_entity} WHERE id=${id};`
 
   if (db_entity === '' || id === '') {
     throw new Error('Not entity or id in the request')
@@ -86,8 +103,42 @@ const deleteRecordInEntity = async (db_entity, id) => {
 
   try {
 
+    const result = await knexConnection.raw(sqlToQuery)
+
+    const jsonRecord = result.map(record => {
+
+      let regOut = {}
+
+      Object.keys(record).forEach(field => {
+        regOut[field] = record[field];
+        try {
+          regOut[field] = JSON.parse(record[field])
+        } catch (error) {}
+
+      });
+
+      return regOut
+    })
+
+    return jsonRecord
+
+  } catch (error) {
+    throw new Error('Error in the sql query')
+  }
+
+}
+
+const deleteRecordInEntity = async (db_entity, id) => {
+
+  const sqlToDeleteRecord = `DELETE FROM ${db_entity} WHERE id=${id};`
+  
+  if (db_entity === '' || id === '') {
+    throw new Error('Not entity or id in the request')
+  }
+
+  try {
+
     const result = await knexConnection.raw(sqlToDeleteRecord);
-    knexConnection.destroy();
     console.log(result);
 
   } catch (error) {
@@ -108,7 +159,7 @@ const upsertRecordInEntity = async (db_entity, options) => {
   if (Object.keys(data).length === '0') {
     throw new Error('The request doesnt send any information')
   }
-
+  
   Object.keys(data).forEach(key => {
 
     let value = data[key]
@@ -127,112 +178,12 @@ const upsertRecordInEntity = async (db_entity, options) => {
 
     const result = await knexConnection.raw(sqlToUpsertARecord);
 
-    console.log({ sqlToUpsertARecord });
-    console.log(result);
-
-    knexConnection.destroy();
+    console.log(result)
 
   } catch (error) {
+    console.log(error)
     throw new Error('Error in the upsert entity')
   }
-}
-
-/* const migrateEntity = async (entity) => {
-  let dbname = process.env.CRUD_DBNAME || 'data';
-  let db_entity = entity;
-  if (entity.slice(-1) == 's') {
-    entity = entity.slice(0, -1);
-  }
-
-  // abrir / crear la BD
-  let db = await open({
-    filename: path.resolve(`./data/${dbname}.db`),
-    driver: sqlite.Database
-  })
-    .catch(err => {
-      console.log({ err });
-      res
-        .status(500)
-        .json({
-          error: true,
-          ...err
-        });
-    });
-
-  // consulta para obtener el modelo
-  let jsonRsp = await getMigrateEntityById(entity, 1);
-  let keys = Object.keys(jsonRsp);
-
-  // crear la entidad
-  let entityCols = keys.map(key => {
-    let type = key === 'id' ? 'INTEGER PRIMARY KEY AUTOINCREMENT' : 'TEXT';
-    return `${key} ${type}`
-  })
-    .join(',');
-
-  let sql = `
-        CREATE TABLE IF NOT EXISTS ${db_entity} (${entityCols});
-    `;
-  let table = await db.exec(sql)
-    .catch(err => {
-      console.log({ err });
-    });
-
-  // poblar la entidad
-  let optionsRS = { entity, page: 1 };
-  let jsonRS = await getMigrateEntitiesAll(optionsRS);
-  let cols = keys.join(',');
-
-  jsonRS.results.map(async reg => {
-    let vals = "'" + Object.keys(reg)
-      .map(col => {
-        let value = (typeof reg[col] === 'object')
-          ? JSON.stringify(reg[col])
-          : reg[col]
-          ;
-        value = String(value).replace(/'/g, '');
-        return value;
-      }).join("','") + "'"
-      ;
-    let sql = `
-            INSERT INTO
-                ${db_entity}
-                (${cols})
-            VALUES
-                (${vals})
-        ;`;
-    const result = await db.run(sql);
-  });
-
-  db.close();
-}
- */
-const getRecordsEntityPerPage = async (options) => {
-  const { entity, page } = options;
-
-  const url = `${apiBaseURL}/${entity}/?page=${page || '1'}`;
-
-  const data = await fetch(url)
-    .then(res => res.json())
-    .catch(err => {
-      console.log({ err })
-    })
-    
-  return data
-
-}
-
-const getRecordInEntityById = async (entity, id) => {
-
-  const url = `${apiBaseURL}/${entity}/${id}`;
-  
-  const data = await fetch(url)
-    .then(res => res.json())
-    .catch(err => {
-      console.log({ err })
-    })
-
-  return data
 }
 
 export {
@@ -240,7 +191,4 @@ export {
   getEntityById,
   deleteRecordInEntity,
   upsertRecordInEntity,
-  /* migrateEntity, */
-  getRecordsEntityPerPage,
-  getRecordInEntityById
 }

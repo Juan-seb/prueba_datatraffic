@@ -3,17 +3,7 @@ import { getRecordsInEntity, getEntityById, upsertRecordInEntity, deleteRecordIn
 
 const routerCrud = Router()
 
-/* router.get('/migrate/:entity', async (req, res) => {
-  let { entity } = req.params
-
-  crud.migrateEntity(entity)
-
-  res
-    .status(200)
-    .send(`200: ${entity} migrated`)
-}) */
-
-router.get('/:entity', async (req, res) => {
+routerCrud.get('/:entity', async (req, res) => {
 
   const { page } = req.query
   const { entity } = req.params
@@ -34,7 +24,7 @@ router.get('/:entity', async (req, res) => {
 
 })
 
-router.get('/:entity/:id', async (req, res) => {
+routerCrud.get('/:entity/:id', async (req, res) => {
 
   const { entity, id } = req.params;
 
@@ -50,7 +40,7 @@ router.get('/:entity/:id', async (req, res) => {
 
 })
 
-router.post('/:entity', async (req, res) => {
+routerCrud.post('/:entity', async (req, res) => {
   const { entity } = req.params
 
   const data = req.body
@@ -65,35 +55,35 @@ router.post('/:entity', async (req, res) => {
 
   } catch (error) {
 
-    res.status(500).json({ error })
+    console.log(error)
 
   }
 
 })
 
-router.patch('/:entity', async (req, res) => {
+routerCrud.patch('/:entity', async (req, res) => {
 
   const { entity } = req.params
 
   const data = req.body
 
   try {
-    await service.upsertRecordInEntity(entity, { data })
+    await upsertRecordInEntity(entity, { data })
 
     res.status(200).json({
       error: false,
-      msg: 'Registro creado'
+      msg: 'Registro creado o modificado'
     })
 
   } catch (error) {
-
+    console.log(error)
     res.status(500).json({ error })
 
   }
 
 })
 
-router.delete('/:entity', async (req, res) => {
+routerCrud.delete('/:entity', async (req, res) => {
   const { entity } = req.params
 
   const { id } = req.query
