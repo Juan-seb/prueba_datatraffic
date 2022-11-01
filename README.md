@@ -16,7 +16,7 @@ Se utilizó una arquitecura Cliente / Servidor básica.
 
 - ### FRONTEND
     - `cd ./client`
-    - `cd ./client`
+    - `npm install`
 
 - ### BACKEND
     - `cd ./server`
@@ -27,12 +27,12 @@ Se utilizó una arquitecura Cliente / Servidor básica.
 
 ## EJECUCION
 - ### FRONTEND
-    - cd ./client
-    - npm run start:dev
+    - `cd ./client`
+    - `npm run dev`
 
 - ### BACKEND
-    - cd ./server
-    - npm run start:dev
+    - `cd ./server`
+    - `npm run dev`
 
 ## STACK UTILIZADO
 - Node JS
@@ -42,6 +42,26 @@ Se utilizó una arquitecura Cliente / Servidor básica.
 - SQLite
 - Git y npm
 
-Imagenes:
+Imagenes frontend:
+
+![image](https://user-images.githubusercontent.com/52666459/199136861-580333de-b6e9-4479-a379-5f43f19a10f4.png)
+![image](https://user-images.githubusercontent.com/52666459/199136885-807a91ec-14d2-42d7-807f-b2e88e79497a.png)
+![image](https://user-images.githubusercontent.com/52666459/199136912-f4786ce1-9093-4eae-b3d1-cecf906d4b33.png)
+![image](https://user-images.githubusercontent.com/52666459/199136934-8d08beef-ecfd-4085-bb1f-666ec4c665f0.png)
+
+Imagenes backend:
+
+![image](https://user-images.githubusercontent.com/52666459/199137104-ac611d67-89a1-48e1-be84-dd11a9c6d3fc.png)
+![image](https://user-images.githubusercontent.com/52666459/199137181-edab943a-1497-46a5-b07b-a756b8dc1ad3.png)
+![image](https://user-images.githubusercontent.com/52666459/199137267-7e970e13-18e2-4b45-bc1e-4910577483fb.png)
+![image](https://user-images.githubusercontent.com/52666459/199137220-c4478132-ce08-444d-9b0b-a1ad3d0f44fb.png)
+![image](https://user-images.githubusercontent.com/52666459/199137306-eee2b421-16bc-4488-aed7-4488608607b9.png)
+
+
+
+
+
+
+
 
 
