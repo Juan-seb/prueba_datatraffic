@@ -1,4 +1,4 @@
-# prueba_datatraffic
+# Prueba tecnica datatraffic
 
 La prueba tecnica de desarrollador de software junior consta de una parte backend y otra para el frontend.
 
@@ -53,9 +53,12 @@ Imagenes backend:
 
 ![image](https://user-images.githubusercontent.com/52666459/199137104-ac611d67-89a1-48e1-be84-dd11a9c6d3fc.png)
 ![image](https://user-images.githubusercontent.com/52666459/199137181-edab943a-1497-46a5-b07b-a756b8dc1ad3.png)
-![image](https://user-images.githubusercontent.com/52666459/199137267-7e970e13-18e2-4b45-bc1e-4910577483fb.png)
 ![image](https://user-images.githubusercontent.com/52666459/199137220-c4478132-ce08-444d-9b0b-a1ad3d0f44fb.png)
+![image](https://user-images.githubusercontent.com/52666459/199137267-7e970e13-18e2-4b45-bc1e-4910577483fb.png)
 ![image](https://user-images.githubusercontent.com/52666459/199137306-eee2b421-16bc-4488-aed7-4488608607b9.png)
+![image](https://user-images.githubusercontent.com/52666459/199137496-1d40f6c3-3075-4f9b-8e17-bebf934f0f2e.png)
+![image](https://user-images.githubusercontent.com/52666459/199137572-215550ed-0cb5-4954-a7ac-61616991f582.png)
+![image](https://user-images.githubusercontent.com/52666459/199137598-65c59a4a-69ab-40c4-8933-9bcc593c470a.png)
 
 
 
