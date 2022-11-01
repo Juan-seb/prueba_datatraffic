@@ -57,7 +57,7 @@ Se utilizó una arquitecura Cliente / Servidor básica.
 ![image](https://user-images.githubusercontent.com/52666459/199137572-215550ed-0cb5-4954-a7ac-61616991f582.png)
 ![image](https://user-images.githubusercontent.com/52666459/199137598-65c59a4a-69ab-40c4-8933-9bcc593c470a.png)
 
-
+### Realizado por: Juan Sebastian Angulo Cita
 
 
 
